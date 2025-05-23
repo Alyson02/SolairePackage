@@ -23,7 +23,7 @@ jobs:
         run: dotnet restore
 
       - name: ✅ Run tests with coverage
-        run: dotnet test --no-build --verbosity normal --collect:"XPlat Code Coverage"
+        run: dotnet test ./Solaire.Tests/Solaire.Tests.csproj --no-build --verbosity normal --collect:"XPlat Code Coverage"
 
       - name: 🔍 Find coverage file
         id: coverage
