@@ -13,7 +13,15 @@
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <RepositoryUrl>https://github.com/alyson02/SolairePackage</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageIconUrl>https://i.ibb.co/v64xFKsZ/pngegg-1.png</PackageIconUrl>
-        <PackageReadmeFile>../README.md</PackageReadmeFile>
+        <PackageIcon>icon.png</PackageIcon>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
     </PropertyGroup>
+    
+    <ItemGroup>
+        <None Include="images\icon.png" Pack="true" PackagePath="\" />
+    </ItemGroup>
+    
+    <ItemGroup>
+        <None Include="../README.md" Pack="true" PackagePath="/" />
+    </ItemGroup>
 </Project>
