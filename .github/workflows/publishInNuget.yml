@@ -1,4 +1,4 @@
-name: 🧪 Test & 🚀 Publish NuGet Package
+name: 🧪 Test & 📊 Coverage + 🚀 Publish NuGet Package
 
 on:
   push:
@@ -22,8 +22,33 @@ jobs:
       - name: 📦 Restore dependencies
         run: dotnet restore
 
-      - name: ✅ Run tests
-        run: dotnet test --no-build --verbosity normal
+      - name: ✅ Run tests with coverage
+        run: dotnet test --no-build --verbosity normal --collect:"XPlat Code Coverage"
+
+      - name: 🔍 Find coverage file
+        id: coverage
+        run: |
+          echo "##[group]Looking for coverage file..."
+          export COVERAGE=$(find . -type f -name 'coverage.cobertura.xml' | head -n 1)
+          echo "coverage_path=$COVERAGE" >> $GITHUB_OUTPUT
+          echo "Found: $COVERAGE"
+          echo "##[endgroup]"
+
+      - name: 📥 Install ReportGenerator
+        run: dotnet tool install --global dotnet-reportgenerator-globaltool
+
+      - name: 🧾 Generate HTML coverage report
+        run: |
+          reportgenerator \
+            -reports:${{ steps.coverage.outputs.coverage_path }} \
+            -targetdir:coveragereport \
+            -reporttypes:Html
+
+      - name: 📤 Upload coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: html-coverage-report
+          path: coveragereport
 
       - name: 🏗️ Build solution
         run: dotnet build --configuration Release --no-restore
@@ -32,4 +57,5 @@ jobs:
         run: dotnet pack --configuration Release --no-build --output ./nupkg
 
       - name: 🚀 Push to NuGet.org
+        if: startsWith(github.ref, 'refs/tags/v') # Only publish if tag
         run: dotnet nuget push ./nupkg/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }}
