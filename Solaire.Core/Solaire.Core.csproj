@@ -4,7 +4,16 @@
         <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <RootNamespace>MeuPrimeiroPacote.Core</RootNamespace>
-    </PropertyGroup>
+        <RootNamespace>Solaire.Core</RootNamespace>
+        <PackageId>Solaire</PackageId>
+        <Version>1.0.0</Version>
+        <Authors>Alyson</Authors>
+        <Company>Alyson Tech</Company>
+        <Description>This package returns to the solarie celebration, just to publish my first package.</Description>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <RepositoryUrl>https://github.com/alyson02/SolairePackage</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageIconUrl>https://i.ibb.co/v64xFKsZ/pngegg-1.png</PackageIconUrl>
+    </PropertyGroup>eee
 
 </Project>
