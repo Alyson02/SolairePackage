@@ -6,7 +6,7 @@
         <Nullable>enable</Nullable>
         <RootNamespace>Solaire.Core</RootNamespace>
         <PackageId>Solaire</PackageId>
-        <Version>1.0.0</Version>
+        <Version>2.0.0</Version>
         <Authors>Alyson</Authors>
         <Company>Alyson Tech</Company>
         <Description>This package returns to the solarie celebration, just to publish my first package.</Description>
