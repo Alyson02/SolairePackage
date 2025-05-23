@@ -1,4 +1,4 @@
-using MeuPrimeiroPacote.Core;
+using Solaire.Core;
 
 namespace Tests.Core;
 
