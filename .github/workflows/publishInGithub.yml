@@ -59,12 +59,4 @@ jobs:
 
       - name: 🚀 Push to GitHub Packages
         if: startsWith(github.ref, 'refs/tags/v')
-        run: dotnet nuget push ./nupkg/*.nupkg \
-          --source "github" \
-          --api-key ${{ secrets.GH_PACKAGES_TOKEN }}
-
-      - name: 🚀 Push to NuGet.org
-        if: startsWith(github.ref, 'refs/tags/v') && env.NUGET_API_KEY != ''
-        run: dotnet nuget push ./nupkg/*.nupkg \
-          --source "https://api.nuget.org/v3/index.json" \
-          --api-key ${{ secrets.NUGET_API_KEY }}
+        run: dotnet nuget push ./nupkg/*.nupkg --source "github" --api-key ${{ secrets.GH_PACKAGES_TOKEN }}
