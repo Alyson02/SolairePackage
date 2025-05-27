@@ -1,0 +1,74 @@
+name: 🧪 Test & 📊 Coverage + 🚀 Publish GitHub/NuGet Packages
+
+on:
+  push:
+    tags:
+      - 'v*' # Trigger only on version tags like v1.0.0
+  workflow_dispatch:
+
+jobs:
+  test-and-publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: ⚙️ Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: 📦 Restore dependencies
+        run: dotnet restore
+
+      - name: ✅ Run tests with coverage
+        run: dotnet test ./Solaire.Tests/Solaire.Tests.csproj --verbosity normal --collect:"XPlat Code Coverage"
+
+      - name: 🔍 Find coverage file
+        id: coverage
+        run: |
+          echo "##[group]Looking for coverage file..."
+          export COVERAGE=$(find . -type f -name 'coverage.cobertura.xml' | head -n 1)
+          echo "coverage_path=$COVERAGE" >> $GITHUB_OUTPUT
+          echo "Found: $COVERAGE"
+          echo "##[endgroup]"
+
+      - name: 🧾 Generate HTML coverage report
+        run: |
+          dotnet tool install --global dotnet-reportgenerator-globaltool
+          reportgenerator \
+            -reports:${{ steps.coverage.outputs.coverage_path }} \
+            -targetdir:coveragereport \
+            -reporttypes:Html
+
+      - name: 📤 Upload HTML coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: html-coverage-report
+          path: coveragereport
+
+      - name: 🏗️ Build solution
+        run: dotnet build --configuration Release --no-restore
+
+      - name: 📦 Pack NuGet package
+        run: dotnet pack --configuration Release --no-build --output ./nupkg
+
+      - name: 🔧 Add GitHub Packages NuGet source
+        run: dotnet nuget add source \
+          --username ${{ github.actor }} \
+          --password ${{ secrets.GH_PACKAGES_TOKEN }} \
+          --store-password-in-clear-text \
+          --name github "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
+
+      - name: 🚀 Push to GitHub Packages
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: dotnet nuget push ./nupkg/*.nupkg \
+          --source "github" \
+          --api-key ${{ secrets.GH_PACKAGES_TOKEN }}
+
+      - name: 🚀 Push to NuGet.org
+        if: startsWith(github.ref, 'refs/tags/v') && env.NUGET_API_KEY != ''
+        run: dotnet nuget push ./nupkg/*.nupkg \
+          --source "https://api.nuget.org/v3/index.json" \
+          --api-key ${{ secrets.NUGET_API_KEY }}
