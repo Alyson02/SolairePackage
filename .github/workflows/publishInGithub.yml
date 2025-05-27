@@ -55,11 +55,7 @@ jobs:
         run: dotnet pack --configuration Release --no-build --output ./nupkg
 
       - name: 🔧 Add GitHub Packages NuGet source
-        run: dotnet nuget add source \
-          --username ${{ github.actor }} \
-          --password ${{ secrets.GH_PACKAGES_TOKEN }} \
-          --store-password-in-clear-text \
-          --name github "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
+        run: dotnet nuget add source --username ${{ github.actor }} --password ${{ secrets.GH_PACKAGES_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
 
       - name: 🚀 Push to GitHub Packages
         if: startsWith(github.ref, 'refs/tags/v')
